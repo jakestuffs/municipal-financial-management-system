@@ -1,19 +1,19 @@
 #ifndef ASSETS_H
 #define ASSETS_H
 
-#define MAX_ASSET_NAME 50
-#define MAX_LOCATION 50
+#define MAX_ASSETS 100
 
-typedef struct {
+struct Asset {
     int id;
-    char name[MAX_ASSET_NAME];
-    char location[MAX_LOCATION];
-    double value;
-} Asset;
+    char name[50];
+    char type[30];
+    float value;
+    char department[50];
+    char condition[30];
+};
 
-void add_asset(Asset assets[], int *count);
-void list_assets(const Asset assets[], int count);
-int find_asset_by_id(const Asset assets[], int count, int id);
-void search_asset(const Asset assets[], int count);
+void addAsset(struct Asset assets[], int *count);
+void displayAssets(struct Asset assets[], int count);
+void searchAsset(struct Asset assets[], int count);
 
 #endif
