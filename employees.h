@@ -1,19 +1,20 @@
 #ifndef EMPLOYEES_H
 #define EMPLOYEES_H
 
-#define MAX_NAME 50
-#define MAX_DEPARTMENT 50
+#define MAX_EMPLOYEES 100
 
-typedef struct {
+struct Employee {
     int id;
-    char name[MAX_NAME];
-    char department[MAX_DEPARTMENT];
-    double salary;
-} Employee;
+    char name[50];
+    char department[50];
+    float basicSalary;
+    float housingAllowance;
+    float transportAllowance;
+};
 
-void add_employee(Employee employees[], int *count);
-void list_employees(const Employee employees[], int count);
-int find_employee_by_id(const Employee employees[], int count, int id);
-void search_employee(const Employee employees[], int count);
+void addEmployee(struct Employee employees[], int *count);
+void displayEmployees(struct Employee employees[], int count);
+void searchEmployee(struct Employee employees[], int count);
+float calculateSalary(struct Employee employee);
 
 #endif

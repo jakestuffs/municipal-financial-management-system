@@ -2,62 +2,82 @@
 #include <string.h>
 #include "budget.h"
 
-static void read_line(char *buffer, int size)
+void addBudget(struct Budget budgets[], int *count)
 {
-    if (fgets(buffer, size, stdin) != NULL) {
-        buffer[strcspn(buffer, "\n")] = '\0';
-    }
-}
-
-void add_budget(DepartmentBudget budgets[], int *count)
-{
-    if (*count >= 50) {
-        printf("Budget limit reached.\n");
+    if (*count >= MAX_BUDGETS) {
+        printf("Budget list is full.\n");
         return;
     }
 
-    printf("Department: ");
-    read_line(budgets[*count].department, MAX_DEPARTMENT);
-
-    printf("Allocated amount: ");
-    scanf("%lf", &budgets[*count].allocated);
-
-    printf("Spent amount: ");
-    scanf("%lf", &budgets[*count].spent);
     getchar();
+    printf("Enter department: ");
+    fgets(budgets[*count].department, 50, stdin);
+    budgets[*count].department[strlen(budgets[*count].department) - 1] = '\0';
+
+    printf("Enter allocated budget: ");
+    scanf("%f", &budgets[*count].allocated);
+    if (budgets[*count].allocated < 0) {
+        printf("Budget cannot be negative.\n");
+        return;
+    }
+
+    printf("Enter expenditure: ");
+    scanf("%f", &budgets[*count].expenditure);
+    if (budgets[*count].expenditure < 0) {
+        printf("Expenditure cannot be negative.\n");
+        return;
+    }
 
     (*count)++;
     printf("Budget added successfully.\n");
 }
 
-double budget_remaining(const DepartmentBudget *budget)
+void displayBudgets(struct Budget budgets[], int count)
 {
-    return budget->allocated - budget->spent;
-}
+    int i;
 
-void list_budgets(const DepartmentBudget budgets[], int count)
-{
     if (count == 0) {
         printf("No budgets found.\n");
         return;
     }
 
-    printf("\n--- Department Budgets ---\n");
-    for (int i = 0; i < count; i++) {
-        printf("Department: %s | Allocated: %.2f | Spent: %.2f | Remaining: %.2f\n",
-               budgets[i].department,
-               budgets[i].allocated,
-               budgets[i].spent,
-               budget_remaining(&budgets[i]));
+    for (i = 0; i < count; i++) {
+        printf("\nDepartment: %s\n", budgets[i].department);
+        printf("Allocated Budget: N$%.2f\n", budgets[i].allocated);
+        printf("Expenditure: N$%.2f\n", budgets[i].expenditure);
+        printf("Remaining Budget: N$%.2f\n", calculateRemaining(budgets[i]));
+
+        if (budgets[i].expenditure <= budgets[i].allocated)
+            printf("Status: WITHIN BUDGET\n");
+        else
+            printf("Status: EXCEEDED BUDGET\n");
     }
 }
 
-int find_budget(const DepartmentBudget budgets[], int count, const char department[])
+float calculateRemaining(struct Budget budget)
 {
-    for (int i = 0; i < count; i++) {
+    return budget.allocated - budget.expenditure;
+}
+
+void searchBudget(struct Budget budgets[], int count)
+{
+    char department[50];
+    int i;
+    int found = 0;
+
+    getchar();
+    printf("Enter department: ");
+    fgets(department, 50, stdin);
+    department[strlen(department) - 1] = '\0';
+
+    for (i = 0; i < count; i++) {
         if (strcmp(budgets[i].department, department) == 0) {
-            return i;
+            printf("Department found: %s\n", budgets[i].department);
+            printf("Remaining: N$%.2f\n", calculateRemaining(budgets[i]));
+            found = 1;
         }
     }
-    return -1;
+
+    if (found == 0)
+        printf("Department budget not found.\n");
 }
