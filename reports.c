@@ -1,75 +1,74 @@
 #include <stdio.h>
 #include "reports.h"
 
-void employee_report(const Employee employees[], int count)
+void employeeReport(struct Employee employees[], int count)
 {
-    double total_salary = 0.0;
+    int i;
+    float total = 0;
+    float highest = 0;
+    float lowest = 0;
 
-    for (int i = 0; i < count; i++) {
-        total_salary += employees[i].salary;
+    if (count == 0) {
+        printf("No employees available.\n");
+        return;
     }
 
-    printf("\n--- Employee Report ---\n");
-    printf("Number of employees: %d\n", count);
-    printf("Total salaries: %.2f\n", total_salary);
+    for (i = 0; i < count; i++) {
+        float salary = calculateSalary(employees[i]);
+        total = total + salary;
 
-    if (count > 0) {
-        printf("Average salary: %.2f\n", total_salary / count);
+        if (i == 0 || salary > highest)
+            highest = salary;
+
+        if (i == 0 || salary < lowest)
+            lowest = salary;
     }
+
+    printf("\nEMPLOYEE REPORT\n");
+    printf("Total Employees: %d\n", count);
+    printf("Average Salary: N$%.2f\n", total / count);
+    printf("Highest Salary: N$%.2f\n", highest);
+    printf("Lowest Salary: N$%.2f\n", lowest);
 }
 
-void budget_report(const DepartmentBudget budgets[], int count)
+void budgetReport(struct Budget budgets[], int count)
 {
-    double total_allocated = 0.0;
-    double total_spent = 0.0;
+    int i;
+    float allocated = 0;
+    float expenditure = 0;
+    int exceeded = 0;
 
-    for (int i = 0; i < count; i++) {
-        total_allocated += budgets[i].allocated;
-        total_spent += budgets[i].spent;
+    for (i = 0; i < count; i++) {
+        allocated = allocated + budgets[i].allocated;
+        expenditure = expenditure + budgets[i].expenditure;
     }
 
-    printf("\n--- Budget Report ---\n");
-    printf("Departments with budgets: %d\n", count);
-    printf("Total allocated: %.2f\n", total_allocated);
-    printf("Total spent: %.2f\n", total_spent);
-    printf("Total remaining: %.2f\n", total_allocated - total_spent);
-}
+    printf("\nBUDGET REPORT\n");
+    printf("Total Allocated Budget: N$%.2f\n", allocated);
+    printf("Total Expenditure: N$%.2f\n", expenditure);
+    printf("Remaining Budget: N$%.2f\n", allocated - expenditure);
 
-void supplier_report(const Supplier suppliers[], int count)
-{
-    double total_contracts = 0.0;
+    printf("Departments exceeding budget:\n");
 
-    for (int i = 0; i < count; i++) {
-        total_contracts += suppliers[i].contract_value;
+    for (i = 0; i < count; i++) {
+        if (budgets[i].expenditure > budgets[i].allocated) {
+            printf("- %s\n", budgets[i].department);
+            exceeded = 1;
+        }
     }
 
-    printf("\n--- Supplier Report ---\n");
-    printf("Number of suppliers: %d\n", count);
-    printf("Total contract value: %.2f\n", total_contracts);
+    if (exceeded == 0)
+        printf("None\n");
 }
 
-void asset_report(const Asset assets[], int count)
+void supplierReport(struct Supplier suppliers[], int count)
 {
-    double total_value = 0.0;
-
-    for (int i = 0; i < count; i++) {
-        total_value += assets[i].value;
-    }
-
-    printf("\n--- Asset Report ---\n");
-    printf("Number of assets: %d\n", count);
-    printf("Total asset value: %.2f\n", total_value);
+    printf("\nSUPPLIER REPORT\n");
+    displaySuppliers(suppliers, count);
 }
 
-void system_summary(const Employee employees[], int employee_count,
-                    const DepartmentBudget budgets[], int budget_count,
-                    const Supplier suppliers[], int supplier_count,
-                    const Asset assets[], int asset_count)
+void assetReport(struct Asset assets[], int count)
 {
-    printf("\n========== SYSTEM SUMMARY ==========\n");
-    printf("Employees : %d\n", employee_count);
-    printf("Budgets   : %d\n", budget_count);
-    printf("Suppliers : %d\n", supplier_count);
-    printf("Assets    : %d\n", asset_count);
-    printf("=====================================\n");
+    printf("\nASSET REPORT\n");
+    displayAssets(assets, count);
 }
