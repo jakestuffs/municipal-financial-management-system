@@ -1,47 +1,20 @@
-# MFMS Testing Documentation
+# MFMS Project A Testing
 
-## Build Test
-
-Compile all source modules together:
-
-```bash
+## Compile
 gcc -Wall -Wextra -std=c11 main.c employees.c budget.c suppliers.c assets.c reports.c -o mfms
-```
 
-A successful build should produce the executable without compiler errors.
+## Run
+./mfms
 
-## Functional Tests
+## Tests
+1. Enter an invalid main-menu choice and check that an error is displayed.
+2. Display employees, add an employee, search for an employee, and check salary calculation.
+3. Enter a negative salary and check that it is rejected.
+4. Display budgets and check remaining budget.
+5. Add a budget where expenditure is greater than allocation and check EXCEEDED BUDGET.
+6. Display, add and search for a supplier.
+7. Display, add and search for an asset.
+8. Run all reports and compare the results with the stored data.
+9. Select Exit and check that the program closes.
 
-### Employee Module
-- List the initial employees.
-- Search for employee ID 101 and confirm John is displayed.
-- Search for an unknown ID and confirm "Employee not found".
-- Add a new employee and confirm the employee count increases.
-
-### Budget Module
-- List the initial department budgets.
-- Confirm remaining budget equals allocated minus spent.
-- Add a department budget and confirm it appears in the list.
-
-### Supplier Module
-- List the initial suppliers.
-- Search for supplier ID 201.
-- Search for an unknown supplier ID.
-- Add a supplier and confirm it appears in the list.
-
-### Asset Module
-- List the initial assets.
-- Search for asset ID 301.
-- Search for an unknown asset ID.
-- Add an asset and confirm it appears in the list.
-
-### Reports Module
-- Run the employee report and verify total and average salary calculations.
-- Run the budget report and verify allocated, spent and remaining totals.
-- Run the supplier report and verify total contract value.
-- Run the asset report and verify total asset value.
-- Run the system summary and verify all record counts.
-
-## Expected Result
-
-All menu options should execute without crashing, valid records should be displayed correctly, and calculated report values should match the stored data.
+The expected result is that valid information is accepted, basic invalid values are rejected, searches work, calculations are correct, and the menus work correctly.
