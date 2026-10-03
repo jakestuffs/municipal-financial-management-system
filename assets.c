@@ -2,83 +2,83 @@
 #include <string.h>
 #include "assets.h"
 
-static void read_line(char *buffer, int size)
+void addAsset(struct Asset assets[], int *count)
 {
-    if (fgets(buffer, size, stdin) != NULL) {
-        buffer[strcspn(buffer, "\n")] = '\0';
-    }
-}
-
-void add_asset(Asset assets[], int *count)
-{
-    if (*count >= 100) {
-        printf("Asset limit reached.\n");
+    if (*count >= MAX_ASSETS) {
+        printf("Asset list is full.\n");
         return;
     }
 
-    printf("Asset ID: ");
+    printf("Enter asset ID: ");
     scanf("%d", &assets[*count].id);
     getchar();
 
-    printf("Asset name: ");
-    read_line(assets[*count].name, MAX_ASSET_NAME);
+    printf("Enter asset name: ");
+    fgets(assets[*count].name, 50, stdin);
+    assets[*count].name[strlen(assets[*count].name) - 1] = '\0';
 
-    printf("Location: ");
-    read_line(assets[*count].location, MAX_LOCATION);
+    printf("Enter asset type: ");
+    fgets(assets[*count].type, 30, stdin);
+    assets[*count].type[strlen(assets[*count].type) - 1] = '\0';
 
-    printf("Value: ");
-    scanf("%lf", &assets[*count].value);
+    printf("Enter purchase value: ");
+    scanf("%f", &assets[*count].value);
+    if (assets[*count].value < 0) {
+        printf("Value cannot be negative.\n");
+        return;
+    }
     getchar();
+
+    printf("Enter department: ");
+    fgets(assets[*count].department, 50, stdin);
+    assets[*count].department[strlen(assets[*count].department) - 1] = '\0';
+
+    printf("Enter condition: ");
+    fgets(assets[*count].condition, 30, stdin);
+    assets[*count].condition[strlen(assets[*count].condition) - 1] = '\0';
 
     (*count)++;
     printf("Asset added successfully.\n");
 }
 
-void list_assets(const Asset assets[], int count)
+void displayAssets(struct Asset assets[], int count)
 {
+    int i;
+
     if (count == 0) {
         printf("No assets found.\n");
         return;
     }
 
-    printf("\n--- Assets ---\n");
-    for (int i = 0; i < count; i++) {
-        printf("ID: %d | Name: %s | Location: %s | Value: %.2f\n",
-               assets[i].id,
-               assets[i].name,
-               assets[i].location,
-               assets[i].value);
+    for (i = 0; i < count; i++) {
+        printf("\nID: %d\n", assets[i].id);
+        printf("Name: %s\n", assets[i].name);
+        printf("Type: %s\n", assets[i].type);
+        printf("Purchase Value: N$%.2f\n", assets[i].value);
+        printf("Department: %s\n", assets[i].department);
+        printf("Condition: %s\n", assets[i].condition);
     }
 }
 
-int find_asset_by_id(const Asset assets[], int count, int id)
+void searchAsset(struct Asset assets[], int count)
 {
-    for (int i = 0; i < count; i++) {
-        if (assets[i].id == id) {
-            return i;
+    char name[50];
+    int i;
+    int found = 0;
+
+    getchar();
+    printf("Enter asset name: ");
+    fgets(name, 50, stdin);
+    name[strlen(name) - 1] = '\0';
+
+    for (i = 0; i < count; i++) {
+        if (strcmp(assets[i].name, name) == 0) {
+            printf("Asset found: %d - %s - %s\n",
+                   assets[i].id, assets[i].name, assets[i].condition);
+            found = 1;
         }
     }
-    return -1;
-}
 
-void search_asset(const Asset assets[], int count)
-{
-    int id;
-
-    printf("Enter asset ID: ");
-    scanf("%d", &id);
-    getchar();
-
-    int index = find_asset_by_id(assets, count, id);
-
-    if (index == -1) {
+    if (found == 0)
         printf("Asset not found.\n");
-        return;
-    }
-
-    printf("ID: %d | Name: %s | Location: %s | Value: %.2f\n",
-           assets[index].id,
-           assets[index].name,
-           assets[index].location,
-           assets[index].value);
 }
